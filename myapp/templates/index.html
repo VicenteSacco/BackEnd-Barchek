@@ -1,0 +1,20 @@
+<h1> Hola Admin de: </h1>
+<p> El pin de tu bartender es: {{ pin }} </p>
+
+<div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    {% for producto in productos %}
+    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+      <h2>{{producto.categoria == pisco }}</h2>
+      <img src="{{ producto.img }}" alt="{{ producto.nombre }}" class="d-block w-100">
+    </div>
+    {% endfor %}
+  </div>
+  
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+  </button>
+</div>
