@@ -1,30 +1,18 @@
+from django.urls import path
+from myapp.views import AlcoholListCreate, AlcoholRetrieveUpdateDestroy,alcohol_list,alcohol_create,SeleccionAlcoholView
+from myapp import views
 from django.contrib import admin
-from django.urls import path, include
-from rest_framework import routers
-from myapp.views import (
-    AdministradorViewSet,
-    BarraViewSet,
-    CategoríaViewSet,
-    AlcoholViewSet,
-    CarouselItemViewSet,
-    ListaDeAlcoholViewSet,
-    ReporteViewSet,
-    HelloWorldAPI,
-    root_view,
-)
 
-router = routers.DefaultRouter()
-router.register(r'administradores', AdministradorViewSet)
-router.register(r'barras', BarraViewSet)
-router.register(r'categorias', CategoríaViewSet)
-router.register(r'alcoholes', AlcoholViewSet)
-router.register(r'carousel-items', CarouselItemViewSet)
-router.register(r'listas-de-alcohol', ListaDeAlcoholViewSet)
-router.register(r'reportes', ReporteViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', root_view),
-    path('api/', include(router.urls)),
-    path('api/hello/', HelloWorldAPI.as_view(), name='api-hello'),
+    path('alcohol_list/', views.alcohol_list, name='alcohol_list'),
+    path('alcohol/create/', views.alcohol_create, name='alcohol_create'),
+    path('alcohol/update/<int:pk>/', views.alcohol_update, name='alcohol_update'),
+    path('alcohol/delete/<int:pk>/', views.alcohol_delete, name='alcohol_delete'),
+
+    # API Endpoints
+    path('api/alcohol/', AlcoholListCreate.as_view(), name='alcohol-list-create'),
+    path('api/alcohol/<int:pk>/', AlcoholRetrieveUpdateDestroy.as_view(), name='alcohol-detail'),
+    path('api/alcohol/<int:pk>/select/', SeleccionAlcoholView.as_view(), name='alcohol-select')
 ]

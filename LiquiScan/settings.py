@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'myapp',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +54,9 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8001",
+    "http://localhost:8081",
+    "http://192.168.1.127:90001",
+    "http://10.0.2.2:8081",  # Emulador de Android (si es necesario)
 ]
 
 ROOT_URLCONF = 'LiquiScan.urls'
@@ -81,8 +84,12 @@ WSGI_APPLICATION = 'LiquiScan.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'LiquiScan',
+        'USER': 'postgres',
+        'PASSWORD': 'Walter80',
+        'HOST': 'localhost',  
+        'PORT': '5432',       
     }
 }
 

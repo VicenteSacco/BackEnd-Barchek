@@ -1,0 +1,21 @@
+<h2>Lista de Alcoholes</h2>
+<a href="{% url 'alcohol_create' %}">Agregar nuevo</a>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Marca</th>
+        <th>Acciones</th>
+    </tr>
+    {% for alcohol in alcoholes %}
+    <tr>
+        <td>{{ alcohol.id }}</td>
+        <td>{{ alcohol.nombre }}</td>
+        <td>{{ alcohol.marca }}</td>
+        <td>
+            <a href="{% url 'alcohol_update' alcohol.id %}">Editar</a> |
+            <a href="{% url 'alcohol_delete' alcohol.id %}">Eliminar</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
