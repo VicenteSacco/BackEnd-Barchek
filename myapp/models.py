@@ -12,7 +12,6 @@ class Administrador(models.Model):
 class Alcohol(models.Model):
     stockactual = models.IntegerField()
     cantidadunidad = models.CharField(max_length=50)
-    seleccionado = models.BooleanField(default=False)
     ano = models.IntegerField(blank=True, null=True)
     categoria = models.CharField(max_length=50, blank=True, null=True)
     ia = models.CharField(max_length=50, blank=True, null=True)
@@ -21,8 +20,6 @@ class Alcohol(models.Model):
 
     class Meta:
         db_table = 'alcohol'
-
-
 
 
 class AuthGroup(models.Model):

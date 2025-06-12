@@ -19,36 +19,6 @@ class AlcoholRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Alcohol.objects.all()
     serializer_class = AlcoholSerializer
 
-
-class SeleccionAlcoholView(APIView):
-    def post(self, request, pk):
-        """Marca un alcohol como seleccionado."""
-        try:
-            alcohol = Alcohol.objects.get(pk=pk)
-            alcohol.seleccionado = True
-            alcohol.save()
-            serializer = AlcoholSerializer(alcohol)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Alcohol.DoesNotExist:
-            return Response(
-                {"error": "Alcohol no encontrado"}, 
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-    def delete(self, request, pk):
-        """Desmarca un alcohol como seleccionado."""
-        try:
-            alcohol = Alcohol.objects.get(pk=pk)
-            alcohol.seleccionado = False
-            alcohol.save()
-            serializer = AlcoholSerializer(alcohol)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Alcohol.DoesNotExist:
-            return Response(
-                {"error": "Alcohol no encontrado"}, 
-                status=status.HTTP_404_NOT_FOUND
-            )
-        
 # Listar todos los registros
 def alcohol_list(request):
     alcoholes = Alcohol.objects.all()
