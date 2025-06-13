@@ -29,42 +29,42 @@ class ReporteRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Reporte.objects.all()
     serializer_class = ReporteSerializer
 
-# Listar y crear Admin (GET, POST)
+# Listar y crear Administrador (GET, POST)
 class AdministradorListCreate(generics.ListCreateAPIView):
     queryset = Administrador.objects.all()
     serializer_class = AdministradorSerializer
 
-# Actualizar o eliminar un Reportes (GET, PUT, PATCH, DELETE)
+# Actualizar o eliminar un Administrador (GET, PUT, PATCH, DELETE)
 class AdministradorRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Administrador.objects.all()
     serializer_class = AdministradorSerializer
 
-# Listar y crear Reportes (GET, POST)
+# Listar y crear Barra (GET, POST)
 class BarraListCreate(generics.ListCreateAPIView):
     queryset = Barra.objects.all()
     serializer_class = BarraSerializer
 
-# Actualizar o eliminar un Reportes (GET, PUT, PATCH, DELETE)
+# Actualizar o eliminar una Barra (GET, PUT, PATCH, DELETE)
 class BarraRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Barra.objects.all()
     serializer_class = BarraSerializer
 
-# Listar y crear Reportes (GET, POST)
+# Listar y crear lista a alcohol (GET, POST)
 class ListaaalcoholListCreate(generics.ListCreateAPIView):
     queryset = Listaaalcohol.objects.all()
     serializer_class = ListaaalcoholSerializer
 
-# Actualizar o eliminar un Reportes (GET, PUT, PATCH, DELETE)
+# Actualizar o eliminar una lista a alcohol (GET, PUT, PATCH, DELETE)
 class ListaaalcoholRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Listaaalcohol.objects.all()
     serializer_class = ListaaalcoholSerializer
 
-# Listar y crear Reportes (GET, POST)
+# Listar y crear lista de alcohol (GET, POST)
 class ListaDeAlcoholListCreate(generics.ListCreateAPIView):
     queryset = ListaDeAlcohol.objects.all()
     serializer_class = ListaDeAlcoholSerializer
 
-# Actualizar o eliminar un Reportes (GET, PUT, PATCH, DELETE)
+# Actualizar o eliminar una lista de alcohol (GET, PUT, PATCH, DELETE)
 class ListaDeAlcoholRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = ListaDeAlcohol.objects.all()
     serializer_class = ListaDeAlcoholSerializer
