@@ -6,8 +6,8 @@ from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Alcohol
-from .serializers import AlcoholSerializer
+from .models import Alcohol,Reporte,Administrador,ListaDeAlcohol,Listaaalcohol,Barra
+from .serializers import AlcoholSerializer,ReporteSerializer,AdministradorSerializer,BarraSerializer,ListaaalcoholSerializer,ListaDeAlcoholSerializer
 
 # Listar y crear alcoholes (GET, POST)
 class AlcoholListCreate(generics.ListCreateAPIView):
@@ -18,6 +18,59 @@ class AlcoholListCreate(generics.ListCreateAPIView):
 class AlcoholRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Alcohol.objects.all()
     serializer_class = AlcoholSerializer
+
+# Listar y crear Reportes (GET, POST)
+class ReporteListCreate(generics.ListCreateAPIView):
+    queryset = Reporte.objects.all()
+    serializer_class = ReporteSerializer   
+
+# Actualizar o eliminar un Reportes (GET, PUT, PATCH, DELETE)
+class ReporteRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Reporte.objects.all()
+    serializer_class = ReporteSerializer
+
+# Listar y crear Admin (GET, POST)
+class AdministradorListCreate(generics.ListCreateAPIView):
+    queryset = Administrador.objects.all()
+    serializer_class = AdministradorSerializer
+
+# Actualizar o eliminar un Reportes (GET, PUT, PATCH, DELETE)
+class AdministradorRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Administrador.objects.all()
+    serializer_class = AdministradorSerializer
+
+# Listar y crear Reportes (GET, POST)
+class BarraListCreate(generics.ListCreateAPIView):
+    queryset = Barra.objects.all()
+    serializer_class = BarraSerializer
+
+# Actualizar o eliminar un Reportes (GET, PUT, PATCH, DELETE)
+class BarraRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Barra.objects.all()
+    serializer_class = BarraSerializer
+
+# Listar y crear Reportes (GET, POST)
+class ListaaalcoholListCreate(generics.ListCreateAPIView):
+    queryset = Listaaalcohol.objects.all()
+    serializer_class = ListaaalcoholSerializer
+
+# Actualizar o eliminar un Reportes (GET, PUT, PATCH, DELETE)
+class ListaaalcoholRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Listaaalcohol.objects.all()
+    serializer_class = ListaaalcoholSerializer
+
+# Listar y crear Reportes (GET, POST)
+class ListaDeAlcoholListCreate(generics.ListCreateAPIView):
+    queryset = ListaDeAlcohol.objects.all()
+    serializer_class = ListaDeAlcoholSerializer
+
+# Actualizar o eliminar un Reportes (GET, PUT, PATCH, DELETE)
+class ListaDeAlcoholRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ListaDeAlcohol.objects.all()
+    serializer_class = ListaDeAlcoholSerializer
+
+
+
 
 # Listar todos los registros
 def alcohol_list(request):

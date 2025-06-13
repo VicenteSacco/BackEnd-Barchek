@@ -22,6 +22,43 @@ class Alcohol(models.Model):
         db_table = 'alcohol'
 
 
+class Barra(models.Model):
+    nombrebarra = models.CharField(max_length=100)
+    idadministrador = models.ForeignKey(Administrador, models.DO_NOTHING, db_column='idadministrador')
+    idlista = models.ForeignKey('Listadealcohol', models.DO_NOTHING, db_column='idlista')
+
+    class Meta:
+        db_table = 'barra'
+
+
+class Listaaalcohol(models.Model):
+    pk = models.CompositePrimaryKey('idlista', 'idalcohol')
+    idlista = models.ForeignKey('Listadealcohol', models.DO_NOTHING, db_column='idlista')
+    idalcohol = models.ForeignKey(Alcohol, models.DO_NOTHING, db_column='idalcohol')
+
+    class Meta:
+        db_table = 'listaaalcohol'
+
+
+class ListaDeAlcohol(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'listadealcohol'
+
+
+class Reporte(models.Model):
+    fecha = models.DateField()
+    bartender = models.CharField(max_length=100)
+    idbarra = models.ForeignKey(Barra, models.DO_NOTHING, db_column='idbarra')
+
+    class Meta:
+        db_table = 'reporte'
+        unique_together = (('idbarra', 'fecha'),)
+
+
+##----------------MODELOS BASE DE DJNAGO----------------##
+
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
 
@@ -90,16 +127,6 @@ class AuthUserUserPermissions(models.Model):
         db_table = 'auth_user_user_permissions'
         unique_together = (('user', 'permission'),)
 
-
-class Barra(models.Model):
-    nombrebarra = models.CharField(max_length=100)
-    idadministrador = models.ForeignKey(Administrador, models.DO_NOTHING, db_column='idadministrador')
-    idlista = models.ForeignKey('Listadealcohol', models.DO_NOTHING, db_column='idlista')
-
-    class Meta:
-        db_table = 'barra'
-
-
 class DjangoAdminLog(models.Model):
     action_time = models.DateTimeField()
     object_id = models.TextField(blank=True, null=True)
@@ -143,29 +170,3 @@ class DjangoSession(models.Model):
     class Meta:
         managed = False
         db_table = 'django_session'
-
-
-class Listaaalcohol(models.Model):
-    pk = models.CompositePrimaryKey('idlista', 'idalcohol')
-    idlista = models.ForeignKey('Listadealcohol', models.DO_NOTHING, db_column='idlista')
-    idalcohol = models.ForeignKey(Alcohol, models.DO_NOTHING, db_column='idalcohol')
-
-    class Meta:
-        db_table = 'listaaalcohol'
-
-
-class ListaDeAlcohol(models.Model):
-    nombre = models.CharField(max_length=100)
-
-    class Meta:
-        db_table = 'listadealcohol'
-
-
-class Reporte(models.Model):
-    fecha = models.DateField()
-    bartender = models.CharField(max_length=100)
-    idbarra = models.ForeignKey(Barra, models.DO_NOTHING, db_column='idbarra')
-
-    class Meta:
-        db_table = 'reporte'
-        unique_together = (('idbarra', 'fecha'),)

@@ -2,6 +2,10 @@
 
 Este proyecto es el backend desarrollado en Django para la aplicación LiquiScan.
 
+## Instalar Base de datos
+cd "C:\Program Files\PostgreSQL\17\bin"
+psql -h localhost -U postgres -d LiquiScan -f "C:\lugar\de\nombre.sql"
+
 ## Requisitos Previos
 
 - Python 3.8 o superior
@@ -32,10 +36,6 @@ Este proyecto es el backend desarrollado en Django para la aplicación LiquiScan
    ```bash
    pip install -r requirements.txt
    ```
-
-4. Configurar la base de datos:
-   - Por defecto, el proyecto usa SQLite.
-   - Si usas otra base de datos, configura `DATABASES` en `LiquiScan/settings.py`.
 
 5. Aplicar migraciones:
    ```bash

@@ -1,5 +1,5 @@
 from django.urls import path
-from myapp.views import AlcoholListCreate, AlcoholRetrieveUpdateDestroy,alcohol_list,alcohol_create
+from myapp.views import AlcoholListCreate, AlcoholRetrieveUpdateDestroy,alcohol_list,alcohol_create,ReporteListCreate,ReporteRetrieveUpdateDestroy,AdministradorListCreate,AdministradorRetrieveUpdateDestroy,BarraListCreate,BarraRetrieveUpdateDestroy,ListaaalcoholRetrieveUpdateDestroy,ListaaalcoholListCreate,ListaDeAlcoholListCreate,ListaDeAlcoholRetrieveUpdateDestroy
 from myapp import views
 from django.contrib import admin
 
@@ -14,4 +14,14 @@ urlpatterns = [
     # API Endpoints
     path('api/alcohol/', AlcoholListCreate.as_view(), name='alcohol-list-create'),
     path('api/alcohol/<int:pk>/', AlcoholRetrieveUpdateDestroy.as_view(), name='alcohol-detail'),
+    path('api/reportes/', views.ReporteListCreate.as_view(), name='reportes-list-create'),
+    path('api/reportes/<int:pk>/', views.ReporteRetrieveUpdateDestroy.as_view(), name='reportes-detail'),
+    path('api/administrador/', views.AdministradorListCreate.as_view(), name='administrador-list-create'),
+    path('api/administrador/<int:pk>/', views.AdministradorRetrieveUpdateDestroy.as_view(), name='administrador-detail'),
+    path('api/barra/', views.BarraListCreate.as_view(), name='barra-list-create'),
+    path('api/barra/<int:pk>/', views.BarraRetrieveUpdateDestroy.as_view(), name='barra-detail'),
+    path('api/Lista_a_alcohol/', views.ListaaalcoholListCreate.as_view(), name='Lista_a_alcohol-list-create'),
+    path('api/Lista_a_alcohol/<int:pk>/', views.ListaaalcoholRetrieveUpdateDestroy.as_view(), name='Lista_a_alcohol-detail'),
+    path('api/Lista_de_alcohol/', views.ListaDeAlcoholListCreate.as_view(), name='lista_de_alcohol-list-create'),
+    path('api/Lista_de_alcohol/<int:pk>/', views.ListaDeAlcoholRetrieveUpdateDestroy.as_view(), name='lista_de_alcohol-detail')
 ]
