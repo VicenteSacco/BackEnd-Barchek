@@ -5,6 +5,7 @@
         <th>ID</th>
         <th>Nombre</th>
         <th>Marca</th>
+        <th>Imagen</th>
         <th>Acciones</th>
     </tr>
     {% for alcohol in alcoholes %}
@@ -12,6 +13,9 @@
         <td>{{ alcohol.id }}</td>
         <td>{{ alcohol.nombre }}</td>
         <td>{{ alcohol.marca }}</td>
+        <td>
+                <img src="{{ alcohol.imagen }}" alt="{{ alcohol.nombre }}" style="max-height:100px;">
+        </td>
         <td>
             <a href="{% url 'alcohol_update' alcohol.id %}">Editar</a> |
             <a href="{% url 'alcohol_delete' alcohol.id %}">Eliminar</a>

@@ -28,9 +28,9 @@ urlpatterns = [
     path('api/Lista_de_alcohol/', views.ListaDeAlcoholListCreate.as_view(), name='lista_de_alcohol-list-create'),
     path('api/Lista_de_alcohol/<int:pk>/', views.ListaDeAlcoholRetrieveUpdateDestroy.as_view(), name='lista_de_alcohol-detail'),
     # Template views
-    path('login/', login_view, name='login_view'),
-    path('register/', register_view, name='register_view'),
-    path('dashboard/', dashboard_view, name='dashboard_view'),
+    path('api/auth/login/', login, name='login'),
+    path('api/auth/register/', register, name='register'),
+    path('api/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # Redirect root to login
     path('', login_view, name='root'),
 ]
