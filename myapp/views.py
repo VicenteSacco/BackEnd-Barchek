@@ -108,3 +108,12 @@ def alcohol_delete(request, pk):
         return redirect('alcohol_list')
     return render(request, 'myapp/alcohol_confirm_delete.html', {'alcohol': alcohol}) 
     
+def login_view(request):
+    return render(request, 'myapp/login.html')
+
+def register_view(request):
+    return render(request, 'myapp/register.html')
+
+def dashboard_view(request):
+    return render(request, 'myapp/dashboard.html') 
+    

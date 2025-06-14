@@ -1,44 +1,25 @@
 from django.db import models
 
-
 class Administrador(models.Model):
     correoelectronico = models.CharField(unique=True, max_length=100)
     contrasena = models.CharField(max_length=100)
+    pin = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = 'administrador'
 
-
 class Alcohol(models.Model):
     stockactual = models.IntegerField()
     cantidadunidad = models.CharField(max_length=50)
-    ano = models.IntegerField(blank=True, null=True)
-    categoria = models.CharField(max_length=50, blank=True, null=True)
-    ia = models.CharField(max_length=50, blank=True, null=True)
-    nombre = models.CharField(max_length=100, blank=True, null=True)
-    marca = models.CharField(max_length=100, blank=True, null=True)
+    ano = models.IntegerField(null=True, blank=True)
+    categoria = models.CharField(max_length=50, null=True, blank=True)
+    ia = models.CharField(max_length=50, null=True, blank=True)
+    nombre = models.CharField(max_length=100, null=True, blank=True)
+    marca = models.CharField(max_length=100, null=True, blank=True)
+    imagen = models.CharField(max_length=300, null=True, blank=True)
 
     class Meta:
         db_table = 'alcohol'
-
-
-class Barra(models.Model):
-    nombrebarra = models.CharField(max_length=100)
-    idadministrador = models.ForeignKey(Administrador, models.DO_NOTHING, db_column='idadministrador')
-    idlista = models.ForeignKey('Listadealcohol', models.DO_NOTHING, db_column='idlista')
-
-    class Meta:
-        db_table = 'barra'
-
-
-class Listaaalcohol(models.Model):
-    pk = models.CompositePrimaryKey('idlista', 'idalcohol')
-    idlista = models.ForeignKey('Listadealcohol', models.DO_NOTHING, db_column='idlista')
-    idalcohol = models.ForeignKey(Alcohol, models.DO_NOTHING, db_column='idalcohol')
-
-    class Meta:
-        db_table = 'listaaalcohol'
-
 
 class ListaDeAlcohol(models.Model):
     nombre = models.CharField(max_length=100)
@@ -46,11 +27,26 @@ class ListaDeAlcohol(models.Model):
     class Meta:
         db_table = 'listadealcohol'
 
+class Listaaalcohol(models.Model):
+    idlista = models.ForeignKey(ListaDeAlcohol, models.DO_NOTHING, db_column='idlista', null=True, blank=True)
+    idalcohol = models.ForeignKey(Alcohol, models.DO_NOTHING, db_column='idalcohol', null=True, blank=True)
+
+    class Meta:
+        db_table = 'listaaalcohol'
+        unique_together = (('idlista', 'idalcohol'),)
+
+class Barra(models.Model):
+    nombrebarra = models.CharField(max_length=100)
+    idadministrador = models.ForeignKey(Administrador, models.DO_NOTHING, db_column='idadministrador', null=True, blank=True)
+    idlista = models.ForeignKey(ListaDeAlcohol, models.DO_NOTHING, db_column='idlista', null=True, blank=True)
+
+    class Meta:
+        db_table = 'barra'
 
 class Reporte(models.Model):
     fecha = models.DateField()
     bartender = models.CharField(max_length=100)
-    idbarra = models.ForeignKey(Barra, models.DO_NOTHING, db_column='idbarra')
+    idbarra = models.ForeignKey(Barra, models.DO_NOTHING, db_column='idbarra', null=True, blank=True)
 
     class Meta:
         db_table = 'reporte'

@@ -14,9 +14,19 @@ class ReporteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class AdministradorSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+
     class Meta:
         model = Administrador
-        fields= '__all__'
+        fields = ['id', 'correoelectronico', 'contrasena', 'role']
+        extra_kwargs = {
+            'contrasena': {'write_only': True}
+        }
+    
+    def get_role(self, obj):
+        # You can implement your role logic here
+        # For now, let's return 'admin' for all users
+        return 'admin'
 
 class BarraSerializer(serializers.ModelSerializer):
     class Meta:
