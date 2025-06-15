@@ -189,3 +189,42 @@ class RegenerarPinAdministrador(APIView):
 
         return Response({'mensaje': 'El PIN aún es válido.', 'pin_actual': admin.pin})
     
+class BuscarListasPorAdmin(APIView):
+    def get(self, request, pk):
+        try:
+            admin = Administrador.objects.get(pk=pk)
+        except Administrador.DoesNotExist:
+            return Response({'error': 'Administrador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        listas = ListaDeAlcohol.objects.filter(idadministrador=admin.id)
+        serializer = ListaDeAlcoholSerializer(listas, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class BuscarAlcoholesPorLista(APIView):
+    def get(self, request, pk):
+        try:
+            lista = ListaDeAlcohol.objects.get(pk=pk)
+        except ListaDeAlcohol.DoesNotExist:
+            return Response({'error': 'Lista de alcohol no encontrada.'}, status=status.HTTP_404_NOT_FOUND)
+
+        relaciones = Listaaalcohol.objects.filter(idlista=lista.id)
+        serializer = ListaaalcoholSerializer(relaciones, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class BuscarBarrasPorAdmin(APIView):
+    def get(self, request, pk):
+        try:
+            admin = Administrador.objects.get(pk=pk)
+        except Administrador.DoesNotExist:
+            return Response({'error': 'Administrador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        barras = Barra.objects.filter(idadministrador=admin.id)
+        serializer = BarraSerializer(barras, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+

@@ -36,6 +36,7 @@ class Alcohol(models.Model):
 
 class ListaDeAlcohol(models.Model):
     nombre = models.CharField(max_length=100)
+    idadministrador = models.ForeignKey(Administrador, models.DO_NOTHING, db_column='idadministrador', null=True, blank=True)
 
     class Meta:
         db_table = 'listadealcohol'
