@@ -1,1 +1,8 @@
-LiquiScan/settings.py
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+__pycache__/
+myapp/__pycache__/
+LiquiScan/__pycache__/
