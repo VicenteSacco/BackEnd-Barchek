@@ -3,6 +3,9 @@ ENV/
 env/
 env.bak/
 venv.bak/
-__pycache__/
-myapp/__pycache__/
-LiquiScan/__pycache__/
+/__pycache__/
+/myapp/__pycache__/
+/LiquiScan/__pycache__/
+/LiquiScan/__pycache__
+LiquiScan/__pycache__/urls.cpython-312.pyc
+/myapp/__pycache__
