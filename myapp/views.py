@@ -6,9 +6,15 @@ from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Alcohol,Reporte,Administrador,ListaDeAlcohol,Listaaalcohol,Barra
-from .serializers import AlcoholSerializer,ReporteSerializer,AdministradorSerializer,BarraSerializer,ListaaalcoholSerializer,ListaDeAlcoholSerializer
+from .models import Alcohol,Reporte,Administrador,ListaDeAlcohol,Listaaalcohol,Barra,Bartender
+from .serializers import AlcoholSerializer,ReporteSerializer,AdministradorSerializer,BarraSerializer,ListaaalcoholSerializer,ListaDeAlcoholSerializer,BartenderSerializer
 from .services import process_image_for_liquid_estimation
+from rest_framework import status
+import random
+from django.utils.timezone import now
+from django.shortcuts import get_list_or_404
+from rest_framework.exceptions import ValidationError
+
 
 
 # Listar y crear alcoholes (GET, POST)
@@ -46,6 +52,21 @@ class BarraListCreate(generics.ListCreateAPIView):
     queryset = Barra.objects.all()
     serializer_class = BarraSerializer
 
+    def perform_create(self, serializer):
+        idadmin = self.request.data.get('idadministrador')
+
+        if not idadmin:
+            raise ValidationError({'idadministrador': 'Este campo es obligatorio'})
+
+        # Filtrar las listas del administrador
+        listas = ListaDeAlcohol.objects.filter(idadministrador=idadmin)
+        if not listas.exists():
+            raise ValidationError({'idlista': 'Debes crear primero una lista para poder crear una barra.'})
+
+        # Seleccionar la primera lista del admin por defecto
+        lista = listas.first()
+        serializer.save(idlista=lista)
+
 # Actualizar o eliminar una Barra (GET, PUT, PATCH, DELETE)
 class BarraRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Barra.objects.all()
@@ -71,6 +92,18 @@ class ListaDeAlcoholRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView)
     queryset = ListaDeAlcohol.objects.all()
     serializer_class = ListaDeAlcoholSerializer
 
+
+# Listar y crear lista de Bartender (GET, POST)
+class BartenderListCreate(generics.ListCreateAPIView):
+    queryset = Bartender.objects.all()
+    serializer_class = BartenderSerializer
+
+    
+# Actualizar o eliminar un Bartender (GET, PUT, PATCH, DELETE)
+class BartenderRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Bartender.objects.all()
+    serializer_class = BartenderSerializer
+
 class EstimateLiquidView(APIView):
     def post(self, request, *args, **kwargs):
         image_data = request.data.get('image')
@@ -91,10 +124,7 @@ class EstimateLiquidView(APIView):
                 {"error": "Ocurrió un error interno del servidor."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
-
-
-
+          
 # Listar todos los registros
 def alcohol_list(request):
     alcoholes = Alcohol.objects.all()
@@ -164,4 +194,63 @@ def _process_liquid_estimation_request(image_data: str, drink_id: int):
     except Exception as e:
         # Relanza cualquier otro error inesperado
         raise Exception(f"Error inesperado al procesar la solicitud: {e}")
+
+class RegenerarPinAdministrador(APIView):
+    def patch(self, request, pk):
+        try:
+            admin = Administrador.objects.get(pk=pk)
+        except Administrador.DoesNotExist:
+            return Response({'error': 'Administrador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Si el PIN ha expirado o el usuario lo solicita → generar uno nuevo
+        if admin.is_pin_expired() or request.data.get('forzar', False):
+            nuevo_pin = admin.regenerate_pin()
+            return Response({'mensaje': 'PIN regenerado correctamente.', 'nuevo_pin': nuevo_pin})
+
+        return Response({'mensaje': 'El PIN aún es válido.', 'pin_actual': admin.pin})
     
+class BuscarListasPorAdmin(APIView):
+    def get(self, request, pk):
+        try:
+            admin = Administrador.objects.get(pk=pk)
+        except Administrador.DoesNotExist:
+            return Response({'error': 'Administrador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        listas = ListaDeAlcohol.objects.filter(idadministrador=admin.id)
+        serializer = ListaDeAlcoholSerializer(listas, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class BuscarAlcoholesPorLista(APIView):
+    def get(self, request, pk):
+        try:
+            lista = ListaDeAlcohol.objects.get(pk=pk)
+        except ListaDeAlcohol.DoesNotExist:
+            return Response({'error': 'Lista de alcohol no encontrada.'}, status=status.HTTP_404_NOT_FOUND)
+
+        relaciones = Listaaalcohol.objects.filter(idlista=lista.id)
+        serializer = ListaaalcoholSerializer(relaciones, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class BuscarBarrasPorAdmin(APIView):
+    def get(self, request, pk):
+        try:
+            admin = Administrador.objects.get(pk=pk)
+        except Administrador.DoesNotExist:
+            return Response({'error': 'Administrador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        barras = Barra.objects.filter(idadministrador=admin.id)
+        serializer = BarraSerializer(barras, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class BartendersPorAdministradorConBarra(APIView):
+    def get(self, request, pk):
+        bartenders = Bartender.objects.filter(idadministrador=pk).exclude(idbarra__isnull=True)
+        serializer = BartenderSerializer(bartenders, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+

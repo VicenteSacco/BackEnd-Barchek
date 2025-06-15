@@ -18,6 +18,7 @@ psql -h localhost -U postgres -d LiquiScan -f "C:\lugar\de\nombre.sql"
    ```bash
    git clone <URL_DEL_REPOSITORIO>
    cd BackEnd-Barchek
+   o usar app GithubDesktop
    ```
 
 2. Crear y activar un entorno virtual:
@@ -58,8 +59,9 @@ psql -h localhost -U postgres -d LiquiScan -f "C:\lugar\de\nombre.sql"
 
 ## Notas
 
-- El frontend se ejecuta por separado (por ejemplo, Expo React Native).
+- El frontend se ejecuta por separado (Expo React Native en el puerto `http://localhost:8081/`).
 - Asegúrate de configurar CORS en `LiquiScan/settings.py` para permitir la comunicación entre frontend y backend.
+- Asegurate de cambiar tus credenciales de base de datos en `LiquiScan/settings.py` para evitar problemas de seguridad y/o errores de conexión.
 
 ## Dependencias Principales
 
