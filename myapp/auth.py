@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.hashers import make_password, check_password
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Administrador
-from .serializers import AdministradorSerializer, BartenderSerializer
+from .models import Administrador, Bartender, Barra
+from .serializers import AdministradorSerializer, BartenderSerializer, BarraSerializer
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -55,17 +55,42 @@ def bartender_login(request):
         return Response({'error': 'Nombre y PIN son requeridos'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
+        # 1. Buscar al bartender por su nombre
         bartender = Bartender.objects.get(nombre=username)
-        # check_password compara el PIN enviado con el PIN hasheado en la BD
-        if check_password(pin, bartender.pin):
-            refresh = RefreshToken.for_user(bartender)
-            serializer = BartenderSerializer(bartender)
+        
+        # 2. Verificar que el bartender tenga un administrador asignado
+        if not bartender.idadministrador:
+            return Response({'error': 'Este usuario no tiene un administrador asignado'}, status=status.HTTP_403_FORBIDDEN)
 
-            return Response({
-                'token': str(refresh.access_token),
-                'refresh': str(refresh),
-                'user': serializer.data # Enviamos los datos del bartender serializados
-            })
-        return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+        # 3. Obtener el administrador y validar su PIN
+        admin = bartender.idadministrador
+        
+        # El PIN del admin se compara directamente (es un número)
+        if str(admin.pin) != pin:
+            return Response({'error': 'PIN de administrador incorrecto'}, status=status.HTTP_401_UNAUTHORIZED)
+            
+        # Opcional: Validar si el PIN ha expirado
+        if admin.is_pin_expired():
+            return Response({'error': 'El PIN ha expirado'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # 4. Si todo es correcto, generar un token para el bartender
+        refresh = RefreshToken.for_user(bartender)
+        
+        # 5. Buscar todas las barras asociadas a ese administrador
+        barras = Barra.objects.filter(idadministrador=admin.id)
+        
+        # 6. Serializar los datos para la respuesta
+        user_serializer = BartenderSerializer(bartender)
+        barras_serializer = BarraSerializer(barras, many=True)
+
+        return Response({
+            'token': str(refresh.access_token),
+            'refresh': str(refresh),
+            'user': user_serializer.data,
+            'bars': barras_serializer.data, # Devolvemos la lista de barras
+        })
+
     except Bartender.DoesNotExist:
-        return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'Bartender no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

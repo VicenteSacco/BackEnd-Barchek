@@ -60,17 +60,13 @@ class Barra(models.Model):
         db_table = 'barra'
 
 class Bartender(models.Model):
-    nombre = models.CharField(max_length=100, unique=True)
-    # MODIFICACIÓN: Permitimos que el campo sea nulo y blanco (opcional).
-    pin = models.CharField(max_length=128, null=True, blank=True)
+    # Dejamos el nombre como único para que sirva de usuario
+    nombre = models.CharField(max_length=100, unique=True) 
+    
+    # ¡Quitamos el campo 'pin' y el método save que habíamos añadido!
+    
     idbarra = models.ForeignKey('Barra', models.DO_NOTHING, db_column='idbarra',null=True, blank=True)
     idadministrador = models.ForeignKey('Administrador', models.DO_NOTHING, db_column='idadministrador',null=True, blank=True)
-    
-    def save(self, *args, **kwargs):
-        # Solo hasheamos el pin si se proporciona uno y no está ya hasheado
-        if self.pin and not self.pin.startswith('pbkdf2_sha256$'):
-            self.pin = make_password(self.pin)
-        super().save(*args, **kwargs)
             
     class Meta:
         db_table = 'bartender'
