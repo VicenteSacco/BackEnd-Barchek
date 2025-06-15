@@ -37,5 +37,5 @@ urlpatterns = [
     # Redirect root to login
     path('', login_view, name='root'),
     #Estimador de líquido
-    path('estimate_liquid/', EstimateLiquidView.as_view(), name='estimate_liquid'),
+    path('estimate_liquid/', views.EstimateLiquidView.as_view(), name='estimate_liquid'),
 ]
