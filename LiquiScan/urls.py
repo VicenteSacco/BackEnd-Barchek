@@ -1,4 +1,5 @@
 from django.urls import path
+
 from myapp.views import AlcoholListCreate, AlcoholRetrieveUpdateDestroy,alcohol_list,alcohol_create,ReporteListCreate,ReporteRetrieveUpdateDestroy,AdministradorListCreate,AdministradorRetrieveUpdateDestroy,BarraListCreate,BarraRetrieveUpdateDestroy,ListaaalcoholRetrieveUpdateDestroy,ListaaalcoholListCreate,ListaDeAlcoholListCreate,ListaDeAlcoholRetrieveUpdateDestroy
 from myapp.views import BartenderListCreate,BartenderRetrieveUpdateDestroy,EstimateLiquidView,RegenerarPinAdministrador,BuscarListasPorAdmin,BuscarAlcoholesPorLista,BuscarBarrasPorAdmin,BartendersPorAdministradorConBarra
 from myapp import views
@@ -14,7 +15,7 @@ urlpatterns = [
     path('alcohol/create/', views.alcohol_create, name='alcohol_create'),
     path('alcohol/update/<int:pk>/', views.alcohol_update, name='alcohol_update'),
     path('alcohol/delete/<int:pk>/', views.alcohol_delete, name='alcohol_delete'),
-
+  
     # API Endpoints genericos (GET,POST,PUT,PTACH,DELETE)
     path('api/alcohol/', AlcoholListCreate.as_view(), name='alcohol-list-create'),
     path('api/alcohol/<int:pk>/', AlcoholRetrieveUpdateDestroy.as_view(), name='alcohol-detail'),
@@ -48,7 +49,6 @@ urlpatterns = [
 
     # Redirect root to login (IA)
     path('', login_view, name='root'),
+
     path('estimate_liquid/', views.EstimateLiquidView.as_view(), name='estimate_liquid'),
-
-
 ]

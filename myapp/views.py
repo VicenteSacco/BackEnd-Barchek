@@ -16,6 +16,7 @@ from django.shortcuts import get_list_or_404
 from rest_framework.exceptions import ValidationError
 
 
+
 # Listar y crear alcoholes (GET, POST)
 class AlcoholListCreate(generics.ListCreateAPIView):
     queryset = Alcohol.objects.all()
@@ -91,16 +92,17 @@ class ListaDeAlcoholRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView)
     queryset = ListaDeAlcohol.objects.all()
     serializer_class = ListaDeAlcoholSerializer
 
+
 # Listar y crear lista de Bartender (GET, POST)
 class BartenderListCreate(generics.ListCreateAPIView):
     queryset = Bartender.objects.all()
     serializer_class = BartenderSerializer
 
+    
 # Actualizar o eliminar un Bartender (GET, PUT, PATCH, DELETE)
 class BartenderRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Bartender.objects.all()
     serializer_class = BartenderSerializer
-
 
 class EstimateLiquidView(APIView):
     def post(self, request, *args, **kwargs):
@@ -122,7 +124,7 @@ class EstimateLiquidView(APIView):
                 {"error": "Ocurrió un error interno del servidor."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
+          
 # Listar todos los registros
 def alcohol_list(request):
     alcoholes = Alcohol.objects.all()

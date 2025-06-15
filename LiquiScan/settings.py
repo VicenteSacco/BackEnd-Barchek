@@ -87,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'LiquiScan', # Nombre de la base de datos
         'USER': 'postgres', # Usuario de la base de datos
-        'PASSWORD': 'Walter80', #cambiar
+        'PASSWORD': 'admin', #cambiar
         'HOST': 'localhost',  
         'PORT': '5432',       
     }
