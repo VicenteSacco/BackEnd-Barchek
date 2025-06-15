@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.timezone import now, timedelta
 import random
+#importar make_password para hashear el PIN al guardar
+from django.contrib.auth.hashers import make_password
 
 class Administrador(models.Model):
     correoelectronico = models.CharField(unique=True, max_length=100)
@@ -58,9 +60,17 @@ class Barra(models.Model):
         db_table = 'barra'
 
 class Bartender(models.Model):
-    nombre = models.CharField(max_length=100)
-    idbarra = models.ForeignKey(Barra, models.DO_NOTHING, db_column='idbarra',null=True, blank=True)
-    idadministrador = models.ForeignKey(Administrador, models.DO_NOTHING, db_column='idadministrador',null=True, blank=True)
+    nombre = models.CharField(max_length=100, unique=True)
+    # MODIFICACIÓN: Permitimos que el campo sea nulo y blanco (opcional).
+    pin = models.CharField(max_length=128, null=True, blank=True)
+    idbarra = models.ForeignKey('Barra', models.DO_NOTHING, db_column='idbarra',null=True, blank=True)
+    idadministrador = models.ForeignKey('Administrador', models.DO_NOTHING, db_column='idadministrador',null=True, blank=True)
+    
+    def save(self, *args, **kwargs):
+        # Solo hasheamos el pin si se proporciona uno y no está ya hasheado
+        if self.pin and not self.pin.startswith('pbkdf2_sha256$'):
+            self.pin = make_password(self.pin)
+        super().save(*args, **kwargs)
             
     class Meta:
         db_table = 'bartender'

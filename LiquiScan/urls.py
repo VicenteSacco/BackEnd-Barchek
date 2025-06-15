@@ -6,7 +6,7 @@ from myapp import views
 from django.contrib import admin
 from myapp.views import login_view, register_view, dashboard_view
 from rest_framework_simplejwt.views import TokenRefreshView
-from myapp.auth import login, register
+from myapp.auth import login, register, bartender_login
 
 
 urlpatterns = [
@@ -45,6 +45,7 @@ urlpatterns = [
     # Template views (LOGIN)
     path('api/auth/login/', login, name='login'),
     path('api/auth/register/', register, name='register'),
+    path('api/auth/bartender/login/', bartender_login, name='bartender-login'),
     path('api/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # Redirect root to login (IA)

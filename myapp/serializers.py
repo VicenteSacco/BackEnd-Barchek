@@ -44,6 +44,18 @@ class ListaDeAlcoholSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class BartenderSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+    # Para que la respuesta incluya los datos completos de la barra, no solo el ID
+    idbarra = BarraSerializer(read_only=True) 
+
     class Meta:
         model = Bartender
-        fields = '__all__'
+        fields = ['id', 'nombre', 'pin', 'idbarra', 'idadministrador', 'role']
+        extra_kwargs = {
+            # El PIN será de solo escritura, no se enviará en las respuestas
+            'pin': {'write_only': True}
+        }
+
+    def get_role(self, obj):
+        # Asigna el rol 'bartender' a todas las instancias de este serializer
+        return 'bartender'
