@@ -1,9 +1,22 @@
 from django.db import models
+from django.utils.timezone import now, timedelta
+import random
 
 class Administrador(models.Model):
     correoelectronico = models.CharField(unique=True, max_length=100)
     contrasena = models.CharField(max_length=100)
     pin = models.IntegerField(null=True, blank=True)
+    pin_created_at = models.DateTimeField(default=now)
+
+    def is_pin_expired(self):
+        return now() - self.pin_created_at > timedelta(hours=24)
+
+    def regenerate_pin(self):
+        new_pin = ''.join(str(random.randint(0, 9)) for _ in range(4))
+        self.pin = new_pin
+        self.pin_created_at = now()
+        self.save()
+        return new_pin
 
     class Meta:
         db_table = 'administrador'
@@ -43,14 +56,26 @@ class Barra(models.Model):
     class Meta:
         db_table = 'barra'
 
+class Bartender(models.Model):
+    nombre = models.CharField(max_length=100)
+    idbarra = models.ForeignKey(Barra, models.DO_NOTHING, db_column='idbarra',null=True, blank=True)
+    idadministrador = models.ForeignKey(Administrador, models.DO_NOTHING, db_column='idadministrador',null=True, blank=True)
+            
+    class Meta:
+        db_table = 'bartender'
+
 class Reporte(models.Model):
     fecha = models.DateField()
     bartender = models.CharField(max_length=100)
     idbarra = models.ForeignKey(Barra, models.DO_NOTHING, db_column='idbarra', null=True, blank=True)
 
+
+
     class Meta:
         db_table = 'reporte'
         unique_together = (('idbarra', 'fecha'),)
+
+
 
 
 ##----------------MODELOS BASE DE DJNAGO----------------##

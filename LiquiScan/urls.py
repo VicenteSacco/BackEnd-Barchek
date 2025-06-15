@@ -1,5 +1,6 @@
 from django.urls import path
 from myapp.views import AlcoholListCreate, AlcoholRetrieveUpdateDestroy,alcohol_list,alcohol_create,ReporteListCreate,ReporteRetrieveUpdateDestroy,AdministradorListCreate,AdministradorRetrieveUpdateDestroy,BarraListCreate,BarraRetrieveUpdateDestroy,ListaaalcoholRetrieveUpdateDestroy,ListaaalcoholListCreate,ListaDeAlcoholListCreate,ListaDeAlcoholRetrieveUpdateDestroy
+from myapp.views import BartenderListCreate,BartenderRetrieveUpdateDestroy,EstimateLiquidView,RegenerarPinAdministrador
 from myapp import views
 from django.contrib import admin
 from myapp.views import login_view, register_view, dashboard_view
@@ -27,10 +28,19 @@ urlpatterns = [
     path('api/Lista_a_alcohol/<int:pk>/', views.ListaaalcoholRetrieveUpdateDestroy.as_view(), name='Lista_a_alcohol-detail'),
     path('api/Lista_de_alcohol/', views.ListaDeAlcoholListCreate.as_view(), name='lista_de_alcohol-list-create'),
     path('api/Lista_de_alcohol/<int:pk>/', views.ListaDeAlcoholRetrieveUpdateDestroy.as_view(), name='lista_de_alcohol-detail'),
+    path('api/BartenderCreate/', views.BartenderListCreate.as_view(), name='BartenderCreate'),
+    path('api/BartenderRetrieveUpdateDestroy/<int:pk>',views.AdministradorRetrieveUpdateDestroy.as_view(), name='BartenderRetrieveUpdateDestroy'),
+    path('api/administrador/<int:pk>/regenerar_pin/', views.RegenerarPinAdministrador.as_view(), name='regenerar-pin'),
+
+
     # Template views
     path('api/auth/login/', login, name='login'),
     path('api/auth/register/', register, name='register'),
     path('api/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
     # Redirect root to login
     path('', login_view, name='root'),
+    path('estimate_liquid/', views.EstimateLiquidView.as_view(), name='estimate_liquid'),
+
+
 ]

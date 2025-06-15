@@ -6,9 +6,12 @@ from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Alcohol,Reporte,Administrador,ListaDeAlcohol,Listaaalcohol,Barra
-from .serializers import AlcoholSerializer,ReporteSerializer,AdministradorSerializer,BarraSerializer,ListaaalcoholSerializer,ListaDeAlcoholSerializer
+from .models import Alcohol,Reporte,Administrador,ListaDeAlcohol,Listaaalcohol,Barra,Bartender
+from .serializers import AlcoholSerializer,ReporteSerializer,AdministradorSerializer,BarraSerializer,ListaaalcoholSerializer,ListaDeAlcoholSerializer,BartenderSerializer
 from .services import process_image_for_liquid_estimation
+from rest_framework import status
+import random
+from django.utils.timezone import now
 
 # Listar y crear alcoholes (GET, POST)
 class AlcoholListCreate(generics.ListCreateAPIView):
@@ -69,6 +72,17 @@ class ListaDeAlcoholListCreate(generics.ListCreateAPIView):
 class ListaDeAlcoholRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = ListaDeAlcohol.objects.all()
     serializer_class = ListaDeAlcoholSerializer
+
+# Listar y crear lista de Bartender (GET, POST)
+class BartenderListCreate(generics.ListCreateAPIView):
+    queryset = Bartender.objects.all()
+    serializer_class = BartenderSerializer
+
+# Actualizar o eliminar un Bartender (GET, PUT, PATCH, DELETE)
+class BartenderRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Bartender.objects.all()
+    serializer_class = BartenderSerializer
+
 
 class EstimateLiquidView(APIView):
     def post(self, request, *args, **kwargs):
@@ -160,4 +174,18 @@ def _process_liquid_estimation_request(image_data: str, drink_id: int):
     except Exception as e:
         # Relanza cualquier otro error inesperado
         raise Exception(f"Error inesperado al procesar la solicitud: {e}")
+
+class RegenerarPinAdministrador(APIView):
+    def patch(self, request, pk):
+        try:
+            admin = Administrador.objects.get(pk=pk)
+        except Administrador.DoesNotExist:
+            return Response({'error': 'Administrador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Si el PIN ha expirado o el usuario lo solicita → generar uno nuevo
+        if admin.is_pin_expired() or request.data.get('forzar', False):
+            nuevo_pin = admin.regenerate_pin()
+            return Response({'mensaje': 'PIN regenerado correctamente.', 'nuevo_pin': nuevo_pin})
+
+        return Response({'mensaje': 'El PIN aún es válido.', 'pin_actual': admin.pin})
     
