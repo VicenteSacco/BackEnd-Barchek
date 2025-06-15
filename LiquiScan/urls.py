@@ -1,6 +1,6 @@
 from django.urls import path
 from myapp.views import AlcoholListCreate, AlcoholRetrieveUpdateDestroy,alcohol_list,alcohol_create,ReporteListCreate,ReporteRetrieveUpdateDestroy,AdministradorListCreate,AdministradorRetrieveUpdateDestroy,BarraListCreate,BarraRetrieveUpdateDestroy,ListaaalcoholRetrieveUpdateDestroy,ListaaalcoholListCreate,ListaDeAlcoholListCreate,ListaDeAlcoholRetrieveUpdateDestroy
-from myapp.views import BartenderListCreate,BartenderRetrieveUpdateDestroy,EstimateLiquidView,RegenerarPinAdministrador,BuscarListasPorAdmin,BuscarAlcoholesPorLista,BuscarBarrasPorAdmin
+from myapp.views import BartenderListCreate,BartenderRetrieveUpdateDestroy,EstimateLiquidView,RegenerarPinAdministrador,BuscarListasPorAdmin,BuscarAlcoholesPorLista,BuscarBarrasPorAdmin,BartendersPorAdministradorConBarra
 from myapp import views
 from django.contrib import admin
 from myapp.views import login_view, register_view, dashboard_view
@@ -37,6 +37,8 @@ urlpatterns = [
     path('api/Lista_de_alcohol/<int:pk>/filtrar_lista/', views.BuscarListasPorAdmin.as_view(), name='BuscarListasPorAdmin'),
     path('api/Lista_a_alcohol/<int:pk>/filtrar_lista/', views.BuscarAlcoholesPorLista.as_view(), name='BuscarListasIdLista'),
     path('api/barra/<int:pk>/filtrar_barra/', views.BuscarBarrasPorAdmin.as_view(), name='barra-por-idadmin'),
+    path('api/bartenders_por_administrador_con_barra/<int:pk>/', BartendersPorAdministradorConBarra.as_view(), name='bartenders-por-admin-con-barra'),
+
 
 
     # Template views (LOGIN)

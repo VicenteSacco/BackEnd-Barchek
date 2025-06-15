@@ -12,6 +12,9 @@ from .services import process_image_for_liquid_estimation
 from rest_framework import status
 import random
 from django.utils.timezone import now
+from django.shortcuts import get_list_or_404
+from rest_framework.exceptions import ValidationError
+
 
 # Listar y crear alcoholes (GET, POST)
 class AlcoholListCreate(generics.ListCreateAPIView):
@@ -47,6 +50,21 @@ class AdministradorRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
 class BarraListCreate(generics.ListCreateAPIView):
     queryset = Barra.objects.all()
     serializer_class = BarraSerializer
+
+    def perform_create(self, serializer):
+        idadmin = self.request.data.get('idadministrador')
+
+        if not idadmin:
+            raise ValidationError({'idadministrador': 'Este campo es obligatorio'})
+
+        # Filtrar las listas del administrador
+        listas = ListaDeAlcohol.objects.filter(idadministrador=idadmin)
+        if not listas.exists():
+            raise ValidationError({'idlista': 'Debes crear primero una lista para poder crear una barra.'})
+
+        # Seleccionar la primera lista del admin por defecto
+        lista = listas.first()
+        serializer.save(idlista=lista)
 
 # Actualizar o eliminar una Barra (GET, PUT, PATCH, DELETE)
 class BarraRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
@@ -225,6 +243,12 @@ class BuscarBarrasPorAdmin(APIView):
         barras = Barra.objects.filter(idadministrador=admin.id)
         serializer = BarraSerializer(barras, many=True)
 
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class BartendersPorAdministradorConBarra(APIView):
+    def get(self, request, pk):
+        bartenders = Bartender.objects.filter(idadministrador=pk).exclude(idbarra__isnull=True)
+        serializer = BartenderSerializer(bartenders, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
