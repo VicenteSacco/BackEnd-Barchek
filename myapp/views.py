@@ -8,6 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Alcohol,Reporte,Administrador,ListaDeAlcohol,Listaaalcohol,Barra
 from .serializers import AlcoholSerializer,ReporteSerializer,AdministradorSerializer,BarraSerializer,ListaaalcoholSerializer,ListaDeAlcoholSerializer
+from .services import process_image_for_liquid_estimation
+
 
 # Listar y crear alcoholes (GET, POST)
 class AlcoholListCreate(generics.ListCreateAPIView):
@@ -69,6 +71,27 @@ class ListaDeAlcoholRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView)
     queryset = ListaDeAlcohol.objects.all()
     serializer_class = ListaDeAlcoholSerializer
 
+class EstimateLiquidView(APIView):
+    def post(self, request, *args, **kwargs):
+        image_data = request.data.get('image')
+        drink_id = request.data.get('drinkId')
+
+        try:
+            # Llama a la función auxiliar para manejar la lógica
+            result = _process_liquid_estimation_request(image_data, drink_id)
+            return Response(result, status=status.HTTP_200_OK)
+        except ValueError as e: # Captura errores de validación (400 Bad Request)
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e: # Captura cualquier otro error (500 Internal Server Error)
+            print(f"Error en EstimateLiquidView (método post): {e}") # Log del error
+            return Response(
+                {"error": "Ocurrió un error interno del servidor."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 
 
 
@@ -116,4 +139,29 @@ def register_view(request):
 
 def dashboard_view(request):
     return render(request, 'myapp/dashboard.html') 
+
+def _process_liquid_estimation_request(image_data: str, drink_id: int):
+    """
+    Función auxiliar para procesar la lógica de estimación de líquido.
+    Captura y maneja las excepciones del servicio.
+    """
+    if not image_data:
+        # Devuelve un error específico que la vista pueda capturar
+        raise ValueError("El campo 'image' es requerido.")
+    if drink_id is None:
+        raise ValueError("El campo 'drinkId' es requerido.")
+    try:
+        drink_id = int(drink_id)
+    except ValueError:
+        raise ValueError("El 'drinkId' debe ser un número entero válido.")
+
+    try:
+        result = process_image_for_liquid_estimation(image_data, drink_id)
+        return result
+    except ValueError as e:
+        # Relanza errores de validación específicos del servicio
+        raise e
+    except Exception as e:
+        # Relanza cualquier otro error inesperado
+        raise Exception(f"Error inesperado al procesar la solicitud: {e}")
     

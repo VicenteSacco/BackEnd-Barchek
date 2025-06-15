@@ -1,5 +1,5 @@
 from django.urls import path
-from myapp.views import AlcoholListCreate, AlcoholRetrieveUpdateDestroy,alcohol_list,alcohol_create,ReporteListCreate,ReporteRetrieveUpdateDestroy,AdministradorListCreate,AdministradorRetrieveUpdateDestroy,BarraListCreate,BarraRetrieveUpdateDestroy,ListaaalcoholRetrieveUpdateDestroy,ListaaalcoholListCreate,ListaDeAlcoholListCreate,ListaDeAlcoholRetrieveUpdateDestroy
+from myapp.views import AlcoholListCreate, AlcoholRetrieveUpdateDestroy,alcohol_list,alcohol_create,ReporteListCreate,ReporteRetrieveUpdateDestroy,AdministradorListCreate,AdministradorRetrieveUpdateDestroy,BarraListCreate,BarraRetrieveUpdateDestroy,ListaaalcoholRetrieveUpdateDestroy,ListaaalcoholListCreate,ListaDeAlcoholListCreate,ListaDeAlcoholRetrieveUpdateDestroy,EstimateLiquidView
 from myapp import views
 from django.contrib import admin
 from myapp.views import login_view, register_view, dashboard_view
@@ -13,6 +13,9 @@ urlpatterns = [
     path('alcohol/create/', views.alcohol_create, name='alcohol_create'),
     path('alcohol/update/<int:pk>/', views.alcohol_update, name='alcohol_update'),
     path('alcohol/delete/<int:pk>/', views.alcohol_delete, name='alcohol_delete'),
+
+    
+
 
     # API Endpoints
     path('api/alcohol/', AlcoholListCreate.as_view(), name='alcohol-list-create'),
@@ -33,4 +36,6 @@ urlpatterns = [
     path('api/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # Redirect root to login
     path('', login_view, name='root'),
+    #Estimador de líquido
+    path('estimate_liquid/', EstimateLiquidView.as_view(), name='estimate_liquid'),
 ]
