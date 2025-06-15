@@ -9,3 +9,6 @@ venv.bak/
 /LiquiScan/__pycache__
 LiquiScan/__pycache__/urls.cpython-312.pyc
 /myapp/__pycache__
+LiquiScan/__pycache__/settings.cpython-312.pyc
+LiquiScan/__pycache__/urls.cpython-312.pyc
+myapp/__pycache__/views.cpython-312.pyc
