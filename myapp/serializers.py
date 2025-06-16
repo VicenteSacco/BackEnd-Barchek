@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models import Alcohol,Reporte,Administrador,Barra,Listaaalcohol,ListaDeAlcohol,Bartender
+from .models import Alcohol, InventarioFinal,Reporte,Administrador,Barra,Listaaalcohol,ListaDeAlcohol,Bartender,InventarioFinal
 
 class AlcoholSerializer(serializers.ModelSerializer):
     class Meta:
@@ -53,3 +53,15 @@ class BartenderSerializer(serializers.ModelSerializer):
 
     def get_role(self, obj):
         return 'bartender'
+
+class InventarioFinalSerializer(serializers.ModelSerializer):
+    stock_total = serializers.SerializerMethodField()
+
+    class Meta:
+        model = InventarioFinal
+        fields = ['id', 'reporte', 'alcohol', 'stock_normal', 'stock_ia', 'liquidez_lista', 'stock_total']
+
+    def get_stock_total(self, obj):
+        normal = obj.stock_normal or 0
+        ia = obj.stock_ia or 0
+        return normal + ia
