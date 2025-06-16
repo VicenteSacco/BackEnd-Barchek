@@ -52,6 +52,6 @@ urlpatterns = [
     path('', login_view, name='root'),
 
     #Estimador de líquido
-    path('estimate_liquid/', views.EstimateLiquidView.as_view(), name='estimate_liquid'),
+    path('api/estimate_liquid/', EstimateLiquidView.as_view(), name='estimate_liquid'),
 ]
 

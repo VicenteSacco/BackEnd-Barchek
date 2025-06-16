@@ -105,23 +105,35 @@ class BartenderRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BartenderSerializer
 
 class EstimateLiquidView(APIView):
+    """
+    Recibe una imagen de una botella en base64 y devuelve la estimación
+    de la fracción de líquido restante procesada por una IA.
+    """
     def post(self, request, *args, **kwargs):
         image_data = request.data.get('image')
-        drink_id = request.data.get('drinkId')
+        drink_id = request.data.get('drinkId') # Mantenemos drinkId por si lo usas a futuro
 
-        try:
-            # Llama a la función auxiliar para manejar la lógica
-            result = _process_liquid_estimation_request(image_data, drink_id)
-            return Response(result, status=status.HTTP_200_OK)
-        except ValueError as e: # Captura errores de validación (400 Bad Request)
+        # Validación de la entrada
+        if not image_data or drink_id is None:
             return Response(
-                {"error": str(e)},
+                {"error": "Los campos 'image' (en base64) y 'drinkId' son requeridos."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        except Exception as e: # Captura cualquier otro error (500 Internal Server Error)
-            print(f"Error en EstimateLiquidView (método post): {e}") # Log del error
+
+        try:
+            # Llama al servicio de IA para procesar la imagen
+            result = process_image_for_liquid_estimation(image_data)
+            return Response(result, status=status.HTTP_200_OK)
+        
+        except ValueError as e:
+            # Captura errores de validación específicos (ej: fracción fuera de rango)
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e:
+            # Captura cualquier otro error del servicio de IA y lo loguea
+            print(f"Error en EstimateLiquidView: {e}") 
             return Response(
-                {"error": "Ocurrió un error interno del servidor."},
+                {"error": "Ocurrió un error al procesar la imagen con el servicio de IA."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
           
