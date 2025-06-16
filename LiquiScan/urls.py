@@ -1,12 +1,51 @@
 from django.urls import path
-from myapp.views import AlcoholListCreate, AlcoholRetrieveUpdateDestroy,alcohol_list,alcohol_create,ReporteListCreate,ReporteRetrieveUpdateDestroy,AdministradorListCreate,AdministradorRetrieveUpdateDestroy,BarraListCreate,BarraRetrieveUpdateDestroy,ListaaalcoholRetrieveUpdateDestroy,ListaaalcoholListCreate,ListaDeAlcoholListCreate,ListaDeAlcoholRetrieveUpdateDestroy
-from myapp.views import BartenderListCreate,BartenderRetrieveUpdateDestroy,EstimateLiquidView,RegenerarPinAdministrador,BuscarListasPorAdmin,BuscarAlcoholesPorLista,BuscarBarrasPorAdmin,BartendersPorAdministradorConBarra, InventarioFinalListCreate, InventarioFinalRetrieveUpdateDestroy
-from myapp import views
 from django.contrib import admin
-from myapp.views import login_view, register_view, dashboard_view
 from rest_framework_simplejwt.views import TokenRefreshView
-from myapp.auth import login, register, bartender_login
 
+from myapp import views
+from myapp.auth import login, register, bartender_login
+from myapp.views import (
+    # Alcohol
+    alcohol_list,
+    alcohol_create,
+    AlcoholListCreate,
+    AlcoholRetrieveUpdateDestroy,
+
+    # Reportes
+    ReporteListCreate,
+    ReporteRetrieveUpdateDestroy, 
+    InventarioFinalListCreate, 
+    InventarioFinalRetrieveUpdateDestroy,
+
+    # Administrador
+    AdministradorListCreate,
+    AdministradorRetrieveUpdateDestroy,
+    RegenerarPinAdministrador,
+
+    # Barra
+    BarraListCreate,
+    BarraRetrieveUpdateDestroy,
+    BuscarBarrasPorAdmin,
+
+    # Listas de alcohol
+    ListaaalcoholListCreate,
+    ListaaalcoholRetrieveUpdateDestroy,
+    ListaDeAlcoholListCreate,
+    ListaDeAlcoholRetrieveUpdateDestroy,
+    BuscarListasPorAdmin,
+    BuscarAlcoholesPorLista,
+
+    # Bartender
+    BartenderListCreate,
+    BartenderRetrieveUpdateDestroy,
+    BartendersPorAdministradorConBarra,
+
+    # Otros
+    EstimateLiquidView,
+    dashboard_view,
+    login_view,
+    register_view,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -15,7 +54,7 @@ urlpatterns = [
     path('alcohol/update/<int:pk>/', views.alcohol_update, name='alcohol_update'),
     path('alcohol/delete/<int:pk>/', views.alcohol_delete, name='alcohol_delete'),
   
-    # API Endpoints genericos (GET,POST,PUT,PTACH,DELETE)
+    # API Endpoints genericos (GET,POST,PUT,PATCH,DELETE)
     path('api/alcohol/', AlcoholListCreate.as_view(), name='alcohol-list-create'),
     path('api/alcohol/<int:pk>/', AlcoholRetrieveUpdateDestroy.as_view(), name='alcohol-detail'),
     path('api/reportes/', views.ReporteListCreate.as_view(), name='reportes-list-create'),
@@ -32,7 +71,6 @@ urlpatterns = [
     path('api/Bartender/<int:pk>/',views.BartenderRetrieveUpdateDestroy.as_view(), name='Bartender-detail'),
     path('api/inventario_final/', InventarioFinalListCreate.as_view(), name='inventariofinal-list-create'),
     path('api/inventario_final/<int:pk>/', InventarioFinalRetrieveUpdateDestroy.as_view(), name='inventariofinal-detail'),
-
 
     # Endpoints especificos (FILTROS)
     path('api/administrador/<int:pk>/regenerar_pin/', views.RegenerarPinAdministrador.as_view(), name='regenerar-pin'),
@@ -53,6 +91,5 @@ urlpatterns = [
     path('', login_view, name='root'),
 
     #Estimador de líquido
-    path('api/estimate_liquid/', EstimateLiquidView.as_view(), name='estimate_liquid'),
+    path('estimate_liquid/', views.EstimateLiquidView.as_view(), name='estimate_liquid'),
 ]
-

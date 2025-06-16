@@ -14,7 +14,6 @@ import random
 from django.utils.timezone import now
 from django.shortcuts import get_list_or_404
 from rest_framework.exceptions import ValidationError
-from .models import InventarioFinal
 
 
 # Listar y crear alcoholes (GET, POST)
@@ -152,6 +151,16 @@ class EstimateLiquidView(APIView):
                 {"error": "Ocurrió un error al procesar la imagen con el servicio de IA."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+# Listar y crear inventario final. (GET, POST)
+class InventarioFinalListCreate(generics.ListCreateAPIView):
+    queryset = InventarioFinal.objects.all()
+    serializer_class = InventarioFinalSerializer
+
+# Actualizar o eliminar inventario final. (GET, PUT, PATCH, DELETE)
+class InventarioFinalRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = InventarioFinal.objects.all()
+    serializer_class = InventarioFinalSerializer
           
 # Listar todos los registros
 def alcohol_list(request):
