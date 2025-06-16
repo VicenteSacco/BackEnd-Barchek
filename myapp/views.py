@@ -1,20 +1,20 @@
 
 from django.shortcuts import redirect, get_object_or_404
-from .models import Alcohol
+from .models import Alcohol, InventarioFinal
 from .forms import AlcoholForm  # lo crearás en el paso siguiente
 from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Alcohol,Reporte,Administrador,ListaDeAlcohol,Listaaalcohol,Barra,Bartender
-from .serializers import AlcoholSerializer,ReporteSerializer,AdministradorSerializer,BarraSerializer,ListaaalcoholSerializer,ListaDeAlcoholSerializer,BartenderSerializer
+from .serializers import AlcoholSerializer,ReporteSerializer,AdministradorSerializer,BarraSerializer,ListaaalcoholSerializer,ListaDeAlcoholSerializer,BartenderSerializer, InventarioFinalSerializer
 from .services import process_image_for_liquid_estimation
 from rest_framework import status
 import random
 from django.utils.timezone import now
 from django.shortcuts import get_list_or_404
 from rest_framework.exceptions import ValidationError
-
+from .models import InventarioFinal
 
 
 # Listar y crear alcoholes (GET, POST)
@@ -282,3 +282,11 @@ class BartendersPorAdministradorConBarra(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# Creación de inventario final.
+class InventarioFinalListCreate(generics.ListCreateAPIView):
+    queryset = InventarioFinal.objects.all()
+    serializer_class = InventarioFinalSerializer
+
+class InventarioFinalRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = InventarioFinal.objects.all()
+    serializer_class = InventarioFinalSerializer
