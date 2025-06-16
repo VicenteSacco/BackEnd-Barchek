@@ -98,6 +98,22 @@ class BartenderListCreate(generics.ListCreateAPIView):
     queryset = Bartender.objects.all()
     serializer_class = BartenderSerializer
 
+    def perform_create(self, serializer):
+        idadmin = self.request.data.get('idadministrador')
+
+        if not idadmin:
+            raise ValidationError({'idadministrador': 'Este campo es obligatorio'})
+
+        # Filtrar las barras del administrador
+        barras = Barra.objects.filter(idadministrador=idadmin)
+        if not barras.exists():
+            raise ValidationError({'idbarra': 'Debes crear primero una barra para poder crear un bartender.'})
+
+        # Seleccionar la primera barra del admin por defecto
+        barra = barras.first()
+        serializer.save(idbarra=barra)
+
+
     
 # Actualizar o eliminar un Bartender (GET, PUT, PATCH, DELETE)
 class BartenderRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):

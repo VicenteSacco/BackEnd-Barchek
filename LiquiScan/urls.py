@@ -1,5 +1,4 @@
 from django.urls import path
-
 from myapp.views import AlcoholListCreate, AlcoholRetrieveUpdateDestroy,alcohol_list,alcohol_create,ReporteListCreate,ReporteRetrieveUpdateDestroy,AdministradorListCreate,AdministradorRetrieveUpdateDestroy,BarraListCreate,BarraRetrieveUpdateDestroy,ListaaalcoholRetrieveUpdateDestroy,ListaaalcoholListCreate,ListaDeAlcoholListCreate,ListaDeAlcoholRetrieveUpdateDestroy
 from myapp.views import BartenderListCreate,BartenderRetrieveUpdateDestroy,EstimateLiquidView,RegenerarPinAdministrador,BuscarListasPorAdmin,BuscarAlcoholesPorLista,BuscarBarrasPorAdmin,BartendersPorAdministradorConBarra
 from myapp import views
@@ -29,9 +28,8 @@ urlpatterns = [
     path('api/Lista_a_alcohol/<int:pk>/', views.ListaaalcoholRetrieveUpdateDestroy.as_view(), name='Lista_a_alcohol-detail'),
     path('api/Lista_de_alcohol/', views.ListaDeAlcoholListCreate.as_view(), name='lista_de_alcohol-list-create'),
     path('api/Lista_de_alcohol/<int:pk>/', views.ListaDeAlcoholRetrieveUpdateDestroy.as_view(), name='lista_de_alcohol-detail'),
-    path('api/BartenderCreate/', views.BartenderListCreate.as_view(), name='BartenderCreate'),
-    path('api/BartenderRetrieveUpdateDestroy/<int:pk>',views.AdministradorRetrieveUpdateDestroy.as_view(), name='BartenderRetrieveUpdateDestroy'),
-
+    path('api/Bartender/', views.BartenderListCreate.as_view(), name='Bartender-list-create'),
+    path('api/Bartender/<int:pk>/',views.BartenderRetrieveUpdateDestroy.as_view(), name='Bartender-detail'),
 
     # Endpoints especificos (FILTROS)
     path('api/administrador/<int:pk>/regenerar_pin/', views.RegenerarPinAdministrador.as_view(), name='regenerar-pin'),
