@@ -16,6 +16,8 @@ from myapp.views import (
     ReporteRetrieveUpdateDestroy, 
     InventarioFinalListCreate, 
     InventarioFinalRetrieveUpdateDestroy,
+    ReportesPorAdministrador,
+    InventarioPorReporte,
 
     # Administrador
     AdministradorListCreate,
@@ -26,6 +28,7 @@ from myapp.views import (
     BarraListCreate,
     BarraRetrieveUpdateDestroy,
     BuscarBarrasPorAdmin,
+    BuscarBarraPorLista,
 
     # Listas de alcohol
     ListaaalcoholListCreate,
@@ -78,6 +81,11 @@ urlpatterns = [
     path('api/Lista_a_alcohol/<int:pk>/filtrar_lista/', views.BuscarAlcoholesPorLista.as_view(), name='BuscarListasIdLista'),
     path('api/barra/<int:pk>/filtrar_barra/', views.BuscarBarrasPorAdmin.as_view(), name='barra-por-idadmin'),
     path('api/bartenders_por_administrador_con_barra/<int:pk>/', BartendersPorAdministradorConBarra.as_view(), name='bartenders-por-admin-con-barra'),
+    path('api/barra/<int:pk>/por_lista/', BuscarBarraPorLista.as_view(), name='buscar-barra-por-lista'),
+    path('api/reportes/<int:pk>/por_administrador/', ReportesPorAdministrador.as_view(), name='reportes-por-admin'),
+    path('api/inventarios/<int:reporte_id>/por_reporte/', InventarioPorReporte.as_view(), name='inventarios-por-reporte'),
+
+
 
 
 

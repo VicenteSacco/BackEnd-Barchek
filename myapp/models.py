@@ -76,14 +76,13 @@ class Reporte(models.Model):
     bartender = models.CharField(max_length=100)
     idbarra = models.ForeignKey(Barra, models.DO_NOTHING, db_column='idbarra', null=True, blank=True)
 
-
-
     class Meta:
         db_table = 'reporte'
         unique_together = (('idbarra', 'fecha'),)
 
+
 class InventarioFinal(models.Model):
-    reporte = models.ForeignKey(Reporte, on_delete=models.CASCADE)
+    reporte = models.ForeignKey(Reporte, on_delete=models.CASCADE, related_name='inventarios')
     alcohol = models.ForeignKey(Alcohol, on_delete=models.CASCADE)
     stock_ia = models.FloatField()
     stock_normal = models.IntegerField()
@@ -91,15 +90,6 @@ class InventarioFinal(models.Model):
     @property
     def nombre_producto(self):
         return self.alcohol.nombre
-
-    @property
-    def liquidez_lista(self):
-        try:
-            lista = Lista_de_alcohol.objects.get(bartender=self.reporte.bartender) # type: ignore
-            relacion = Lista_a_alcohol.objects.get(lista=lista, alcohol=self.alcohol) # type: ignore
-            return relacion.cantidad
-        except (Lista_de_alcohol.DoesNotExist, Lista_a_alcohol.DoesNotExist): # type: ignore
-            return None
 
     @property
     def stock_final(self):

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'myapp',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -54,10 +55,17 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8081",
-    "http://192.168.1.127:90001",
-    "http://10.0.2.2:8081",  # Emulador de Android (si es necesario)
+     "http://also-geneva.gl.at.ply.gg:20641",  # Frontend Playit
+    "http://called-alcohol.gl.at.ply.gg:28420",  # Backend Playit
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://also-geneva.gl.at.ply.gg:20641",
+    "http://called-alcohol.gl.at.ply.gg:28420",
+]
+
+ALLOWED_HOSTS = ["*", "called-alcohol.gl.at.ply.gg", "also-geneva.gl.at.ply.gg"]
+
 
 ROOT_URLCONF = 'LiquiScan.urls'
 
@@ -87,7 +95,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'LiquiScan', # Nombre de la base de datos
         'USER': 'postgres', # Usuario de la base de datos
-        'PASSWORD': 'admin', #cambiar
+        'PASSWORD': 'Walter80', #cambiar
         'HOST': 'localhost',  
         'PORT': '5432',       
     }
@@ -134,3 +142,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+}

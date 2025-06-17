@@ -14,6 +14,7 @@ import random
 from django.utils.timezone import now
 from django.shortcuts import get_list_or_404
 from rest_framework.exceptions import ValidationError
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 # Listar y crear alcoholes (GET, POST)
@@ -29,7 +30,9 @@ class AlcoholRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
 # Listar y crear Reportes (GET, POST)
 class ReporteListCreate(generics.ListCreateAPIView):
     queryset = Reporte.objects.all()
-    serializer_class = ReporteSerializer   
+    serializer_class = ReporteSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['idbarra', 'fecha']
 
 # Actualizar o eliminar un Reportes (GET, PUT, PATCH, DELETE)
 class ReporteRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
@@ -291,11 +294,42 @@ class BartendersPorAdministradorConBarra(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# Creación de inventario final.
-class InventarioFinalListCreate(generics.ListCreateAPIView):
-    queryset = InventarioFinal.objects.all()
-    serializer_class = InventarioFinalSerializer
+class BuscarBarraPorLista(APIView):
+    def get(self, request, pk):  # pk es el id de la Lista
+        try:
+            lista = ListaDeAlcohol.objects.get(pk=pk)
+        except ListaDeAlcohol.DoesNotExist:
+            return Response({'error': 'Lista no encontrada.'}, status=status.HTTP_404_NOT_FOUND)
 
-class InventarioFinalRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-    queryset = InventarioFinal.objects.all()
-    serializer_class = InventarioFinalSerializer
+        try:
+            barra = Barra.objects.get(idlista=lista.id)
+        except Barra.DoesNotExist:
+            return Response({'error': 'No hay una barra vinculada a esta lista.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = BarraSerializer(barra)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ReportesPorAdministrador(APIView):
+    def get(self, request, pk):
+        try:
+            admin = Administrador.objects.get(pk=pk)
+        except Administrador.DoesNotExist:
+            return Response({'error': 'Administrador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Buscar todas las barras de este administrador
+        barras = Barra.objects.filter(idadministrador=admin.id)
+
+        # Buscar todos los reportes asociados a esas barras
+        reportes = Reporte.objects.filter(idbarra__in=barras)
+
+        serializer = ReporteSerializer(reportes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class InventarioPorReporte(APIView):
+    def get(self, request, reporte_id):
+        inventarios = InventarioFinal.objects.filter(reporte_id=reporte_id)
+        serializer = InventarioFinalSerializer(inventarios, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
