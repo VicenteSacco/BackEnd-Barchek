@@ -34,12 +34,25 @@ def calcular_volumenes(fraccion: float, capacidad_total_ml: float = 750.0) -> di
         "volumen_ml": round(volumen_ml, 2)
     }
 
-def process_image_for_liquid_estimation(base64_image_data: str) -> dict:
+def process_image_for_liquid_estimation(base64_image_data: str, drink_id: int | None = None) -> dict:
     """
     Procesa una imagen en base64 para estimar la fracción de líquido restante usando GPT-4o.
-    Devuelve la fracción predicha y los volúmenes calculados.
+    ``drink_id`` se incluye por compatibilidad con el frontend aunque no se utilice
+    actualmente.  Devuelve la fracción predicha y los volúmenes calculados.
     """
     try:
+        # Algunas librerías añaden un prefijo al dato base64 (por ejemplo
+        # ``data:image/jpeg;base64,``). Si está presente lo removemos para
+        # evitar errores.
+        if ',' in base64_image_data:
+            base64_image_data = base64_image_data.split(',')[1]
+
+        # Validamos que realmente sea una cadena en Base64
+        try:
+            base64.b64decode(base64_image_data, validate=True)
+        except Exception:
+            raise ValueError("La imagen enviada no es una cadena Base64 válida.")
+
         # Envía la solicitud a la API de OpenAI
         response = client.chat.completions.create(
             model="gpt-4o",
