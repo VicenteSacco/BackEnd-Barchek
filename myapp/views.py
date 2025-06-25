@@ -129,7 +129,7 @@ class EstimateLiquidView(APIView):
     """
     def post(self, request, *args, **kwargs):
         image_data = request.data.get('image')
-        drink_id = request.data.get('drinkId') # Mantenemos drinkId por si lo usas a futuro
+        drink_id = request.data.get('drinkId') # ID de la bebida enviada desde el frontend
 
         # Validación de la entrada
         if not image_data or drink_id is None:
@@ -137,10 +137,13 @@ class EstimateLiquidView(APIView):
                 {"error": "Los campos 'image' (en base64) y 'drinkId' son requeridos."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
+        try:
+            drink_id = int(drink_id)  # Aseguramos que drinkId sea un entero
+        except (TypeError, ValueError):
+            return Response({"error": "El campo 'drinkId' debe ser un número entero."}, status=status.HTTP_400_BAD_REQUEST)
         try:
             # Llama al servicio de IA para procesar la imagen
-            result = process_image_for_liquid_estimation(image_data)
+            result = process_image_for_liquid_estimation(image_data, drink_id)
             return Response(result, status=status.HTTP_200_OK)
         
         except ValueError as e:
@@ -209,31 +212,6 @@ def register_view(request):
 
 def dashboard_view(request):
     return render(request, 'myapp/dashboard.html') 
-
-def _process_liquid_estimation_request(image_data: str, drink_id: int):
-    """
-    Función auxiliar para procesar la lógica de estimación de líquido.
-    Captura y maneja las excepciones del servicio.
-    """
-    if not image_data:
-        # Devuelve un error específico que la vista pueda capturar
-        raise ValueError("El campo 'image' es requerido.")
-    if drink_id is None:
-        raise ValueError("El campo 'drinkId' es requerido.")
-    try:
-        drink_id = int(drink_id)
-    except ValueError:
-        raise ValueError("El 'drinkId' debe ser un número entero válido.")
-
-    try:
-        result = process_image_for_liquid_estimation(image_data, drink_id)
-        return result
-    except ValueError as e:
-        # Relanza errores de validación específicos del servicio
-        raise e
-    except Exception as e:
-        # Relanza cualquier otro error inesperado
-        raise Exception(f"Error inesperado al procesar la solicitud: {e}")
 
 class RegenerarPinAdministrador(APIView):
     def patch(self, request, pk):
