@@ -18,6 +18,7 @@ from myapp.views import (
     InventarioFinalRetrieveUpdateDestroy,
     ReportesPorAdministrador,
     InventarioPorReporte,
+    ReportesPorBarra,
 
     # Administrador
     AdministradorListCreate,
@@ -84,6 +85,8 @@ urlpatterns = [
     path('api/barra/<int:pk>/por_lista/', BuscarBarraPorLista.as_view(), name='buscar-barra-por-lista'),
     path('api/reportes/<int:pk>/por_administrador/', ReportesPorAdministrador.as_view(), name='reportes-por-admin'),
     path('api/inventarios/<int:reporte_id>/por_reporte/', InventarioPorReporte.as_view(), name='inventarios-por-reporte'),
+    path('api/reportes/<int:idbarra>/por_barra/', ReportesPorBarra.as_view(), name='reportes-por-barra'),
+
 
 
 
@@ -100,4 +103,8 @@ urlpatterns = [
 
     #Estimador de líquido
     path('estimate_liquid/', views.EstimateLiquidView.as_view(), name='estimate_liquid'),
+
+   
+
+    path('api/descargar_reporte/<int:reporte_id>/', views.descargar_excel_reporte, name='descargar_reporte_excel'),
 ]

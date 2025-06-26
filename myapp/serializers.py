@@ -8,15 +8,22 @@ class AlcoholSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class InventarioFinalSerializer(serializers.ModelSerializer):
+    stock_total = serializers.SerializerMethodField()
+
     class Meta:
         model = InventarioFinal
-        fields = ['alcohol', 'stock_normal', 'stock_ia']
-        
+        fields = ['id', 'alcohol', 'stock_normal', 'stock_ia', 'stock_total']
+        read_only_fields = ['id', 'stock_total']
+
+    def get_stock_total(self, obj):
+        normal = obj.stock_normal or 0
+        ia = obj.stock_ia or 0
+        return normal + ia
+ 
 
 class ReporteSerializer(serializers.ModelSerializer):
-    inventarios = InventarioFinalSerializer(many=True)
+    inventarios = InventarioFinalSerializer(many=True, write_only=True)
 
     class Meta:
         model = Reporte
@@ -70,17 +77,7 @@ class BartenderSerializer(serializers.ModelSerializer):
     def get_role(self, obj):
         return 'bartender'
 
-class InventarioFinalSerializer(serializers.ModelSerializer):
-    stock_total = serializers.SerializerMethodField()
 
-    class Meta:
-        model = InventarioFinal
-        fields = ['id', 'reporte', 'alcohol', 'stock_normal', 'stock_ia', 'stock_total']
-
-    def get_stock_total(self, obj):
-        normal = obj.stock_normal or 0
-        ia = obj.stock_ia or 0
-        return normal + ia
 
 
 

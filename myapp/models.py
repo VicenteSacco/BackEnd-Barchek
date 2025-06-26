@@ -75,11 +75,11 @@ class Reporte(models.Model):
     fecha = models.DateField()
     bartender = models.CharField(max_length=100)
     idbarra = models.ForeignKey(Barra, models.DO_NOTHING, db_column='idbarra', null=True, blank=True)
+    barra = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
         db_table = 'reporte'
         unique_together = (('idbarra', 'fecha'),)
-
 
 class InventarioFinal(models.Model):
     reporte = models.ForeignKey(Reporte, on_delete=models.CASCADE, related_name='inventarios')

@@ -15,6 +15,9 @@ from django.utils.timezone import now
 from django.shortcuts import get_list_or_404
 from rest_framework.exceptions import ValidationError
 from django_filters.rest_framework import DjangoFilterBackend
+import io
+import pandas as pd
+from django.http import HttpResponse
 
 
 # Listar y crear alcoholes (GET, POST)
@@ -333,3 +336,43 @@ class InventarioPorReporte(APIView):
         serializer = InventarioFinalSerializer(inventarios, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+def descargar_excel_reporte(request, reporte_id):
+    try:
+        reporte = Reporte.objects.get(pk=reporte_id)
+        inventarios = InventarioFinal.objects.filter(reporte=reporte).select_related('alcohol')
+
+        data = []
+        for inv in inventarios:
+            data.append({
+                'Nombre': inv.alcohol.nombre,
+                'Marca': inv.alcohol.marca,
+                'Stock Manual': inv.stock_normal,
+                'Stock IA': inv.stock_ia,
+                'Stock Total': inv.stock_final
+            })
+
+        df = pd.DataFrame(data)
+
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df.to_excel(writer, index=False, sheet_name='Inventario')
+
+        output.seek(0)
+        response = HttpResponse(output, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename=reporte_{reporte.id}.xlsx'
+        return response
+
+    except Reporte.DoesNotExist:
+        return HttpResponse("Reporte no encontrado", status=404)
+    
+
+class ReportesPorBarra(APIView):
+    def get(self, request, idbarra):
+        try:
+            barra = Barra.objects.get(pk=idbarra)
+        except Barra.DoesNotExist:
+            return Response({'error': 'Barra no encontrada.'}, status=status.HTTP_404_NOT_FOUND)
+
+        reportes = Reporte.objects.filter(idbarra=barra)
+        serializer = ReporteSerializer(reportes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
